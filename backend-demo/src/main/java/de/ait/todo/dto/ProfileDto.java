@@ -5,12 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * 6/15/2023
- * spring-security-demo
- *
- * @author Marsel Sidikov (AIT TR)
- */
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

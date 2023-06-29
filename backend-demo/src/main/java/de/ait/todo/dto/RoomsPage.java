@@ -1,5 +1,6 @@
 package de.ait.todo.dto;
 
+import de.ait.todo.models.Room;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,19 +9,13 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-/**
- * 6/11/2023
- * backend-demo
- *
- * @author Marsel Sidikov (AIT TR)
- */
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 @Builder
-@Schema(description = "Страница с задачами")
-public class TasksPage {
+@Schema(description = "Страница с номерами гостиницы")
+public class RoomsPage {
 
-    @Schema(description = "Список задач")
-    private List<TaskDto> tasks;
+    @Schema(description = "Номера гостиницы")
+    private List<RoomDto> data;
 }

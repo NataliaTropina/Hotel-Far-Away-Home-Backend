@@ -7,29 +7,27 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-/**
- * 6/11/2023
- * backend-demo
- *
- * @author Marsel Sidikov (AIT TR)
- */
-@Data
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 @Builder
-@Entity
-public class Task {
+public class Room {
+
+    public enum TypeOfRoom {
+        STANDART, SUITE, DUPLEX;
+    }
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
+    private String number;
 
-    private String name;
+    @Enumerated(value = EnumType.STRING)
+    private TypeOfRoom typeOfRoom;
 
-    @Column(length = 1000)
-    private String description;
+    private double price;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+
 }

@@ -1,8 +1,6 @@
 package de.ait.todo.controllers.api;
 
-import de.ait.todo.dto.ProfileDto;
-import de.ait.todo.dto.StandardResponseDto;
-import de.ait.todo.dto.TasksPage;
+import de.ait.todo.dto.*;
 import de.ait.todo.security.details.AuthenticatedUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -15,8 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tags;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Tags(value = {
         @Tag(name = "Users")
@@ -44,12 +41,52 @@ public interface UsersApi {
     ResponseEntity<ProfileDto> getProfile(@Parameter(hidden = true)
                                           @AuthenticationPrincipal AuthenticatedUser currentUser);
 
-    @Operation(summary = "Получение списка своих задач", description = "Доступно только пользователю")
+
+    @Operation(summary = "Получение списка пользователей", description = "Доступно только администратору")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Список задач",
+            @ApiResponse(responseCode = "200", description = "Страница с пользователями",
                     content = {
                             @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = TasksPage.class))
+                                    schema = @Schema(implementation = UsersPage.class))
+                    }
+            )
+    })
+
+    @GetMapping(value = "")
+    ResponseEntity<UsersPage> getAll();
+
+
+
+    @Operation(summary = "Удаление пользователя по ID", description = "Доступно только администратору")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Удаление пользователя по ID",
+                    content = {
+                            @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = UsersPage.class))
+                    }
+            )
+    })
+    @DeleteMapping(value = "/{id}")
+    ResponseEntity<UserDto> deleteUserById (@PathVariable("id")Long userId );
+
+    @Operation(summary = "Получение пользователя по ID", description = "Доступно только администратору")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Пользователь по ID",
+                    content = {
+                            @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = UsersPage.class))
+                    }
+            )
+    })
+    @GetMapping(value = "/{id}")
+    ResponseEntity<UserDto> getUserById (@PathVariable("id")Long userId);
+
+    @Operation(summary = "Обновление данных пользователя и сохранение в базу данных", description = "Доступно только администратору")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Обновление пользователя по ID",
+                    content = {
+                            @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = UsersPage.class))
                     }
             ),
             @ApiResponse(responseCode = "403", description = "Пользователь не аутентифицирован",
@@ -59,7 +96,9 @@ public interface UsersApi {
                     }
             )
     })
-    @GetMapping("/my/tasks")
-    ResponseEntity<TasksPage> getMyTasks(@Parameter(hidden = true)
-                                          @AuthenticationPrincipal AuthenticatedUser currentUser);
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping(value = "/{id}")
+    ResponseEntity<UserDto> updateUserById (@PathVariable("id") Long userId, @RequestBody NewUserDto newUserDto);
+
 }
+

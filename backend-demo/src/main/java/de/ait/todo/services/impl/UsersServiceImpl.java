@@ -1,10 +1,9 @@
 package de.ait.todo.services.impl;
 
-import de.ait.todo.dto.ProfileDto;
-import de.ait.todo.dto.TasksPage;
-import de.ait.todo.models.Task;
+import de.ait.todo.dto.*;
+import de.ait.todo.exceptions.IncorrectDeleteException;
+import de.ait.todo.exceptions.NotFoundException;
 import de.ait.todo.models.User;
-import de.ait.todo.repositories.TasksRepository;
 import de.ait.todo.repositories.UsersRepository;
 import de.ait.todo.services.UsersService;
 import lombok.RequiredArgsConstructor;
@@ -12,20 +11,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static de.ait.todo.dto.TaskDto.from;
 
-/**
- * 6/13/2023
- * spring-security-demo
- *
- * @author Marsel Sidikov (AIT TR)
- */
 @RequiredArgsConstructor
 @Service
 public class UsersServiceImpl implements UsersService {
 
     private final UsersRepository usersRepository;
-    private final TasksRepository tasksRepository;
+
 
     @Override
     public ProfileDto getProfile(Long currentUserId) {
@@ -39,14 +31,58 @@ public class UsersServiceImpl implements UsersService {
                 .build();
     }
 
-    @Override
-    public TasksPage getTasksByUser(Long currentUserId) {
-        List<Task> tasks = tasksRepository.findAllByUser_Id(currentUserId);
 
-        return TasksPage.builder()
-                .tasks(from(tasks))
+    @Override
+    public UsersPage getAll() {
+        List<User> users = usersRepository.findAll();
+        return UsersPage.builder()
+                .data(UserDto.from(users))
                 .build();
 
     }
+
+    @Override
+    public UserDto deleteUserById(Long userId) {
+
+        User user = usersRepository.findById(userId)
+                        .orElseThrow( ()->
+                                new NotFoundException("user with id <" + userId + "> not found")
+                        );
+        if(user.getRole()== User.Role.ADMIN) {
+            throw new IncorrectDeleteException("Admin can not be deleted");
+        }
+        usersRepository.deleteById(userId);
+       return UserDto.from(user);
+    }
+
+    @Override
+    public UserDto getUserById(Long userId) {
+        User user = usersRepository.findById(userId)
+            .orElseThrow(()->
+                new NotFoundException("user with id <" + userId + "> not found"));
+
+        return UserDto.from(user);
+    }
+
+    @Override
+    public UserDto updateUserById(Long userId, NewUserDto newUserDto) {
+
+        User user = usersRepository.findById(userId)
+                        .orElseThrow(()->
+                                new NotFoundException("user with id <" + userId + "> not found")
+
+                        );
+
+        user.setFirstName(newUserDto.getFirstName());
+        user.setLastName(newUserDto.getLastName());
+        user.setUpdatedDate(newUserDto.getUpdateDate());
+        user.setEmail(newUserDto.getEmail());
+        user.setPhone(newUserDto.getPhone());
+
+        usersRepository.save(user);
+
+        return UserDto.from(user);
+    }
+
 
 }
