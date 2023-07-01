@@ -25,17 +25,22 @@ public class RoomDto {
     @Schema(description = "Номер комнаты", example = "101")
     private String number;
 
-    @Schema(description = "Тип комнаты", example = "Люкс")
+    @Schema(description = "Бронирование комнаты", example = "true")
+    private boolean isBooked;
+
+    @Schema(description = "Тип комнаты", example = "STANDART")
     @Enumerated(value = EnumType.STRING)
     private Room.TypeOfRoom typeOfRoom;
 
     @Schema(description = "Цена комнаты", example = "550,00")
     private double price;
 
+
     public static RoomDto from (Room room){
         return builder()
                 .id(room.getId())
                 .number(room.getNumber())
+                .isBooked(room.isBooked())
                 .typeOfRoom(room.getTypeOfRoom())
                 .price(room.getPrice())
                 .build();

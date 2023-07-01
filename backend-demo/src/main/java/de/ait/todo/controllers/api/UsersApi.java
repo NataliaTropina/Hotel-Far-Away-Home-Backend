@@ -62,7 +62,7 @@ public interface UsersApi {
             @ApiResponse(responseCode = "200", description = "Удаление пользователя по ID",
                     content = {
                             @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = UsersPage.class))
+                                    schema = @Schema(implementation = UserDto.class))
                     }
             )
     })
@@ -74,7 +74,7 @@ public interface UsersApi {
             @ApiResponse(responseCode = "200", description = "Пользователь по ID",
                     content = {
                             @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = UsersPage.class))
+                                    schema = @Schema(implementation = UserDto.class))
                     }
             )
     })
@@ -86,7 +86,7 @@ public interface UsersApi {
             @ApiResponse(responseCode = "200", description = "Обновление пользователя по ID",
                     content = {
                             @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = UsersPage.class))
+                                    schema = @Schema(implementation = UserDto.class))
                     }
             ),
             @ApiResponse(responseCode = "403", description = "Пользователь не аутентифицирован",

@@ -23,7 +23,7 @@ public interface RoomsApi {
             @ApiResponse(responseCode = "201", description = "Новый номер гостиницы",
                     content = {
                             @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = RoomsPage.class))
+                                    schema = @Schema(implementation = RoomDto.class))
                     }
             )
     })
@@ -33,10 +33,10 @@ public interface RoomsApi {
 
     @Operation(summary = "Получение списка всех номеров гостиницы", description = "Доступно всем")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Страница с пользователями",
+            @ApiResponse(responseCode = "200", description = "Страница с Страница с номерами гостиницы",
                     content = {
                             @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = RoomsPage.class))
+                                    schema = @Schema(implementation = RoomDto.class))
                     }
             )
     })
@@ -56,31 +56,31 @@ public interface RoomsApi {
     })
 
     @GetMapping(value = "/{id}")
-    ResponseEntity<RoomDto> getRoomById (@PathVariable int id);
+    ResponseEntity<RoomDto> getRoomById (@PathVariable("id") int id);
 
     @Operation(summary = "Обновление номера гостиницы и сохранение в базу данных", description = "Доступно только администратору")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Обновление номера гостиницы по ID",
                     content = {
                             @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = RoomsPage.class))
+                                    schema = @Schema(implementation = RoomDto.class))
                     }
             )
     })
 
     @PutMapping(value = "/{id}")
-    ResponseEntity<RoomDto> updateRoom (@PathVariable int id, @RequestBody NewRoomDto newRoom);
+    ResponseEntity<RoomDto> updateRoom (@PathVariable("id") int id, @RequestBody NewRoomDto newRoom);
 
     @Operation(summary = "Удаление номера гостиницы по ID", description = "Доступно только администратору")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Удаление номера гостиницы по ID",
                     content = {
                             @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = RoomsPage.class))
+                                    schema = @Schema(implementation = RoomDto.class))
                     }
             )
     })
 
     @DeleteMapping(value = "/{id}")
-    ResponseEntity<RoomDto> deleteRoom (@PathVariable int id);
+    ResponseEntity<RoomDto> deleteRoom (@PathVariable("id") int id);
 }

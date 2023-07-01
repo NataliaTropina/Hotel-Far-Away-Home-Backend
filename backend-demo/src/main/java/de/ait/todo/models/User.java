@@ -40,4 +40,7 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
+    @OneToMany(mappedBy = "user")
+    private List<Booking> bookings;
+
 }

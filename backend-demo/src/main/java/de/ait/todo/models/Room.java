@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -21,13 +22,21 @@ public class Room {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private int id;
     private String number;
+    private boolean isBooked;
 
     @Enumerated(value = EnumType.STRING)
     private TypeOfRoom typeOfRoom;
 
     private double price;
+
+    @ManyToMany(mappedBy = "rooms")
+    private List<Booking> bookings;
+
+
+
 
 
 }

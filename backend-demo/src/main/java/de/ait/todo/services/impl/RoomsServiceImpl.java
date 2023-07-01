@@ -79,7 +79,6 @@ public class RoomsServiceImpl implements RoomsService {
        Room room = roomsRepository.findById(id)
                        .orElseThrow( ()->
                                new NotFoundException("room with id <" + id + "> not found")
-
                        );
 
         roomsRepository.deleteById(id);
