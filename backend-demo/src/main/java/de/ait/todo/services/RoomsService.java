@@ -3,8 +3,10 @@ package de.ait.todo.services;
 import de.ait.todo.dto.NewRoomDto;
 import de.ait.todo.dto.RoomDto;
 import de.ait.todo.dto.RoomsPage;
+import de.ait.todo.models.Room;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface RoomsService {
@@ -18,4 +20,6 @@ public interface RoomsService {
     RoomDto updateRoom (int id, NewRoomDto newRoom);
 
     RoomDto deleteRoom(int id);
+
+    List<RoomDto> getAvailableRooms(LocalDate checkInDate, LocalDate checkOutDate);
 }

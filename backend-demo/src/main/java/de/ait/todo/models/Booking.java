@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,10 +20,10 @@ public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDateTime createDate;
-    private LocalDateTime updateDate;
-    private LocalDateTime cheCkIn;
-    private LocalDateTime checkOut;
+    private LocalDate createDate;
+    private LocalDate updateDate;
+    private LocalDate cheCkIn;
+    private LocalDate checkOut;
 
     @ManyToMany
     @JoinTable(

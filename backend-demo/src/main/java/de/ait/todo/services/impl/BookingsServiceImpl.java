@@ -14,6 +14,7 @@ import de.ait.todo.repositories.UsersRepository;
 import de.ait.todo.services.BookingsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,7 +43,9 @@ public class BookingsServiceImpl implements BookingsService {
                         new NotFoundException("user with id <" + userId + "> not found")
                 );
 
-        roomList.stream().forEach(room -> room.setBooked(true));
+            for(int i = 0; i < roomList.size(); i++){
+                roomList.get(i).setBooked(true);
+            }
 
 
         Booking booking = Booking.builder()
@@ -90,6 +93,7 @@ public class BookingsServiceImpl implements BookingsService {
         return BookingDto.from(booking);
     }
 
+    @Transactional
     @Override
     public BookingDto deleteBooking(Long id) {
 
@@ -101,7 +105,11 @@ public class BookingsServiceImpl implements BookingsService {
 
         List<Room> roomList = booking.getRooms();
 
-        roomList.stream().forEach(room -> room.setBooked(false));
+        for(int i = 0; i < roomList.size(); i++){
+            roomList.get(i).setBooked(false);
+        }
+
+        roomsRepository.saveAll(roomList);
 
         return BookingDto.from(booking);
     }

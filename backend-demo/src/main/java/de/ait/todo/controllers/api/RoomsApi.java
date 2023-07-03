@@ -1,6 +1,7 @@
 package de.ait.todo.controllers.api;
 
 import de.ait.todo.dto.*;
+import de.ait.todo.models.Room;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -8,9 +9,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.tags.Tags;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Pattern;
+import java.time.LocalDate;
 import java.util.List;
 
 @Tags(value = {
@@ -83,4 +87,25 @@ public interface RoomsApi {
 
     @DeleteMapping(value = "/{id}")
     ResponseEntity<RoomDto> deleteRoom (@PathVariable("id") int id);
+
+
+    @Operation(summary = "Получение доступных номеров в заданный период", description = "Доступна только зарегистрированному пользователю")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Получение доступных номеров",
+                    content = {
+                            @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = RoomDto.class))
+                    }
+            )
+    })
+
+    @GetMapping(value = "/available")
+    List<RoomDto> getAvailableRooms (    @RequestParam(value = "checkInDate", required = true)
+                                      @DateTimeFormat(pattern = "dd-MM-yyyy")
+                                      @Pattern(regexp = "\\d{2}-\\d{2}-\\d{4}", message = "Date should be in format dd-MM-yyyy") LocalDate checkInDate,
+
+                                      @RequestParam(value = "checkOutDate", required = true)
+                                      @DateTimeFormat(pattern = "dd-MM-yyyy")
+                                      @Pattern(regexp = "\\d{2}-\\d{2}-\\d{4}", message = "Date should be in format dd-MM-yyyy") LocalDate checkOutDate);
+
 }

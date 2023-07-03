@@ -4,6 +4,7 @@ import de.ait.todo.controllers.api.RoomsApi;
 import de.ait.todo.dto.NewRoomDto;
 import de.ait.todo.dto.RoomDto;
 import de.ait.todo.dto.RoomsPage;
+import de.ait.todo.models.Room;
 import de.ait.todo.services.RoomsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -46,5 +48,10 @@ public class RoomsController implements RoomsApi {
     @Override
     public ResponseEntity<RoomDto> deleteRoom(int id) {
         return ResponseEntity.ok(roomsService.deleteRoom(id));
+    }
+
+    @Override
+    public List<RoomDto> getAvailableRooms(LocalDate checkInDate, LocalDate checkOutDate) {
+        return roomsService.getAvailableRooms(checkInDate, checkOutDate);
     }
 }
