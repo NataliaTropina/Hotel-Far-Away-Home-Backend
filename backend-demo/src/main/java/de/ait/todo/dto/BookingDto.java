@@ -19,22 +19,19 @@ import java.util.stream.Collectors;
 public class BookingDto {
 
     private Long id;
-    private LocalDate createDate;
-    private LocalDate updateDate;
+   // private LocalDate createDate;
+   // private LocalDate updateDate;
     private LocalDate cheCkIn;
     private LocalDate checkOut;
-    private List<Integer> rooms;
-    private UserDto user;
+    private List<Integer> roomIds;
+    private Long userId;
 
     public static BookingDto from (Booking booking){
         return builder()
                 .id(booking.getId())
-                .createDate(booking.getCreateDate())
-                .updateDate(booking.getUpdateDate())
                 .cheCkIn(booking.getCheCkIn())
                 .checkOut(booking.getCheckOut())
-                .rooms(booking.getRooms().stream().map(Room::getId).collect(Collectors.toList()))
-                .user(UserDto.from(booking.getUser()))
+                .roomIds(booking.getRooms().stream().map(Room::getId).collect(Collectors.toList()))
                 .build();
 
     }

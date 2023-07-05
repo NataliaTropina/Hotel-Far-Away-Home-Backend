@@ -27,6 +27,7 @@ public class UserDto {
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
     private String phone;
+    private List<Long> eventIds;
 
     public static UserDto from(User user) {
         return UserDto.builder()

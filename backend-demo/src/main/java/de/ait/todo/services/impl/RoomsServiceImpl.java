@@ -101,10 +101,7 @@ public class RoomsServiceImpl implements RoomsService {
 
         List<Room> allRooms = roomsRepository.findAll();
 
-
         List<Room> availableRooms = new ArrayList<>();
-
-
 
         for (Room room : allRooms) {
             boolean isAvailable = true;

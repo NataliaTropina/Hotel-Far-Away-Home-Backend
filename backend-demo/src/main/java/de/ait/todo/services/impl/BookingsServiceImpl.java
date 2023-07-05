@@ -35,6 +35,7 @@ public class BookingsServiceImpl implements BookingsService {
     @Override
     public Long createBooking(NewBookingDto newBooking) {
 
+
         List<Room> roomList = roomsRepository.findAllById(newBooking.getRoomIds());
         Long userId = newBooking.getUserId();
 
@@ -43,13 +44,11 @@ public class BookingsServiceImpl implements BookingsService {
                         new NotFoundException("user with id <" + userId + "> not found")
                 );
 
-            for(int i = 0; i < roomList.size(); i++){
+        for(int i = 0; i < roomList.size(); i++){
                 roomList.get(i).setBooked(true);
             }
 
-
         Booking booking = Booking.builder()
-                .createDate(newBooking.getCreateDate())
                 .cheCkIn(newBooking.getCheCkIn())
                 .checkOut(newBooking.getCheckOut())
                 .rooms(roomList)
@@ -83,7 +82,6 @@ public class BookingsServiceImpl implements BookingsService {
                 );
         booking.setCheCkIn(newBooking.getCheCkIn());
         booking.setCheckOut(newBooking.getCheckOut());
-        booking.setUpdateDate(newBooking.getUpdateDate());
 
         List<Room> roomsList = roomsRepository.findAllById(newBooking.getRoomIds());
 
@@ -112,6 +110,18 @@ public class BookingsServiceImpl implements BookingsService {
         roomsRepository.saveAll(roomList);
 
         return BookingDto.from(booking);
+    }
+
+    @Override
+    public List<BookingDto> getUserBookings(Long currentUserId) {
+
+        User user = userRepository.findById(currentUserId)
+                .orElseThrow(()->
+                        new NotFoundException("User with id <" + currentUserId + "> not found"));
+
+        List<Booking> bookingsByUser = bookingsRepository.findAllByUser(user);
+
+        return BookingDto.from(bookingsByUser);
     }
 }
 

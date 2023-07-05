@@ -17,10 +17,11 @@ import java.util.List;
 @Builder
 public class NewBookingDto {
 
-    private LocalDate createDate;
-    private LocalDate updateDate;
+   // private LocalDate createDate;
+   // private LocalDate updateDate;
     private LocalDate cheCkIn;
     private LocalDate checkOut;
-    private List<Integer> roomIds;
     private Long userId;
+    private List<Integer> roomIds;
+   // private Long userId;
 }

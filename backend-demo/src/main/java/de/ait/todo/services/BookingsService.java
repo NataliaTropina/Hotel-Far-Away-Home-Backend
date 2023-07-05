@@ -4,6 +4,8 @@ import de.ait.todo.dto.BookingDto;
 import de.ait.todo.dto.BookingsPage;
 import de.ait.todo.dto.NewBookingDto;
 
+import java.util.List;
+
 public interface BookingsService {
 
     Long createBooking(NewBookingDto newBooking);
@@ -15,4 +17,6 @@ public interface BookingsService {
     BookingDto updateBooking (Long bookingId, NewBookingDto newBooking);
 
     BookingDto deleteBooking (Long id);
+
+    List<BookingDto> getUserBookings (Long currentUserId);
 }

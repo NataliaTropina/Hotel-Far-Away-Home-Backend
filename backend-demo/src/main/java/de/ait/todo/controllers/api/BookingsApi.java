@@ -5,13 +5,16 @@ import de.ait.todo.dto.BookingsPage;
 import de.ait.todo.dto.NewBookingDto;
 import de.ait.todo.dto.RoomsPage;
 import de.ait.todo.models.Booking;
+import de.ait.todo.security.details.AuthenticatedUser;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.tags.Tags;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -85,4 +88,9 @@ public interface BookingsApi {
 
     @DeleteMapping(value = "/{id}")
     BookingDto deleteBooking (@PathVariable("id") Long bookingId);
+
+
+    @GetMapping(value = "/by-user")
+    List<BookingDto> getUserBookings (@Parameter(hidden = true)
+                                      @AuthenticationPrincipal AuthenticatedUser currentUser);
 }
