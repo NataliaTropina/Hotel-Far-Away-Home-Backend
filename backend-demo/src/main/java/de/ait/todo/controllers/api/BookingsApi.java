@@ -90,6 +90,16 @@ public interface BookingsApi {
     BookingDto deleteBooking (@PathVariable("id") Long bookingId);
 
 
+    @Operation(summary = "Получение бронирований и по текущему пользователю", description = "Доступно только зарегистрированному пользователю")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Получение бронирований и по текущему пользователю",
+                    content = {
+                            @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = BookingDto.class))
+                    }
+            )
+    })
+
     @GetMapping(value = "/by-user")
     List<BookingDto> getUserBookings (@Parameter(hidden = true)
                                       @AuthenticationPrincipal AuthenticatedUser currentUser);
