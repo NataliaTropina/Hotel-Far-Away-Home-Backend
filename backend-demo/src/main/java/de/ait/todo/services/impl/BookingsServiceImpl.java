@@ -5,17 +5,21 @@ import de.ait.todo.dto.BookingsPage;
 import de.ait.todo.dto.NewBookingDto;
 import de.ait.todo.dto.UserDto;
 import de.ait.todo.exceptions.NotFoundException;
+import de.ait.todo.exceptions.RoomAlreadyBookedException;
 import de.ait.todo.models.Booking;
 import de.ait.todo.models.Room;
 import de.ait.todo.models.User;
 import de.ait.todo.repositories.BookingsRepository;
 import de.ait.todo.repositories.RoomsRepository;
 import de.ait.todo.repositories.UsersRepository;
+import de.ait.todo.security.details.AuthenticatedUser;
 import de.ait.todo.services.BookingsService;
+import de.ait.todo.services.RoomsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,21 +36,26 @@ public class BookingsServiceImpl implements BookingsService {
 
     private final RoomsRepository roomsRepository;
 
+
     @Override
-    public Long createBooking(NewBookingDto newBooking) {
+    public Long createBooking(NewBookingDto newBooking, AuthenticatedUser currentUser) {
 
 
         List<Room> roomList = roomsRepository.findAllById(newBooking.getRoomIds());
-        Long userId = newBooking.getUserId();
-
-        User user = userRepository.findById(userId)
-                .orElseThrow( ()->
-                        new NotFoundException("user with id <" + userId + "> not found")
+        User user = userRepository.findById(currentUser.getUser().getId())
+                .orElseThrow(() ->
+                        new NotFoundException("User with id <" + currentUser.getUser().getId() + "> not found")
                 );
 
-        for(int i = 0; i < roomList.size(); i++){
-                roomList.get(i).setBooked(true);
+        for (Room room : roomList) {
+            if (room.isBooked() && isRoomBookedForDates(room, newBooking.getCheCkIn(), newBooking.getCheckOut())) {
+                throw new RoomAlreadyBookedException("Room with id <" + room.getId() + "> is already booked for this dates");
             }
+        }
+
+        for (Room room : roomList) {
+            room.setBooked(true);
+        }
 
         Booking booking = Booking.builder()
                 .cheCkIn(newBooking.getCheCkIn())
@@ -57,6 +66,17 @@ public class BookingsServiceImpl implements BookingsService {
 
         return bookingsRepository.save(booking).getId();
     }
+
+    private boolean isRoomBookedForDates(Room room, LocalDate startDate, LocalDate endDate) {
+        List<Booking> bookings = bookingsRepository.findAllByRoomsContains(room);
+        for (Booking booking : bookings) {
+            if (booking.getCheckOut().isAfter(startDate) && booking.getCheCkIn().isBefore(endDate)) {
+                return true; // Даты пересекаются с существующим бронированием
+            }
+        }
+        return false; // Даты не пересекаются с существующими бронированиями
+    }
+
 
     public BookingsPage getAll(){
         List<Booking> bookings = bookingsRepository.findAll();
@@ -75,39 +95,57 @@ public class BookingsServiceImpl implements BookingsService {
         return BookingDto.from(booking);
     }
 
-    public BookingDto updateBooking (Long bookingId, NewBookingDto newBooking){
+    public BookingDto updateBooking (Long bookingId, NewBookingDto newBooking, AuthenticatedUser currentUser){
+
+        User user = userRepository.findById(currentUser.getUser().getId())
+                .orElseThrow(()->
+                        new NotFoundException("User with id <" + currentUser.getUser().getId() + "> not found")
+                        );
+
         Booking booking = bookingsRepository.findById(bookingId)
                 .orElseThrow(()->
                         new NotFoundException("Booking with id <" + bookingId + "> not found")
                 );
-        booking.setCheCkIn(newBooking.getCheCkIn());
-        booking.setCheckOut(newBooking.getCheckOut());
 
-        List<Room> roomsList = roomsRepository.findAllById(newBooking.getRoomIds());
+        if(booking.getUser().getId().equals(user.getId()) || user.getRole().equals(User.Role.ADMIN)) {
 
-        booking.setRooms(roomsList);
-        bookingsRepository.save(booking);
+            booking.setCheCkIn(newBooking.getCheCkIn());
+            booking.setCheckOut(newBooking.getCheckOut());
 
+            List<Room> roomsList = roomsRepository.findAllById(newBooking.getRoomIds());
+
+            booking.setRooms(roomsList);
+            bookingsRepository.save(booking);
+
+        } else throw new NotFoundException("Booking is not available");
         return BookingDto.from(booking);
     }
 
     @Transactional
     @Override
-    public BookingDto deleteBooking(Long id) {
+    public BookingDto deleteBooking(Long id, AuthenticatedUser currentUser) {
+
+        User user =userRepository.findById(currentUser.getUser().getId())
+                .orElseThrow(()->
+                        new NotFoundException("User with id <" + currentUser.getUser().getId() + "> not found")
+                        );
 
         Booking booking = bookingsRepository.findById(id)
                 .orElseThrow(()->
                         new NotFoundException("Booking with id <" + id + "> not found")
                         );
-        bookingsRepository.deleteById(id);
+        if(booking.getUser().getId().equals(user.getId()) || user.getRole().equals(User.Role.ADMIN)) {
 
-        List<Room> roomList = booking.getRooms();
+            bookingsRepository.deleteById(id);
 
-        for(int i = 0; i < roomList.size(); i++){
-            roomList.get(i).setBooked(false);
-        }
+            List<Room> roomList = booking.getRooms();
 
-        roomsRepository.saveAll(roomList);
+            for (int i = 0; i < roomList.size(); i++) {
+                roomList.get(i).setBooked(false);
+            }
+
+            roomsRepository.saveAll(roomList);
+        } else throw new NotFoundException("Booking is not available");
 
         return BookingDto.from(booking);
     }

@@ -36,7 +36,9 @@ public interface BookingsApi {
     })
 
     @PostMapping(value = "")
-    Long createBooking(@RequestBody NewBookingDto newBooking);
+    Long createBooking(@RequestBody NewBookingDto newBooking,
+                       @Parameter(hidden = true)
+                       @AuthenticationPrincipal AuthenticatedUser currentUser);
 
     @Operation(summary = "Получение списка всех бронирований ", description = "Доступно только администратору")
     @ApiResponses(value = {
@@ -64,7 +66,7 @@ public interface BookingsApi {
     BookingDto getBookingById (@PathVariable("id") Long id);
 
 
-    @Operation(summary = "Обновление бронирования по ID", description = "доступно только зарегистрированному пользователю")
+    @Operation(summary = "Обновление бронирования по ID", description = "доступно зарегистрированному пользователю и администратору")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Обновление бронирования по ID",
                     content = {
@@ -74,9 +76,12 @@ public interface BookingsApi {
             )
     })
     @PutMapping(value = "/{id}")
-    BookingDto updateBooking (@PathVariable("id") Long bookingId, @RequestBody NewBookingDto newBooking);
+    BookingDto updateBooking (@PathVariable("id") Long bookingId,
+                              @RequestBody NewBookingDto newBooking,
+                              @Parameter(hidden = true)
+                              @AuthenticationPrincipal AuthenticatedUser currentUser);
 
-    @Operation(summary = "Удаление бронирования по ID ", description = "Доступно только зарегистрированному пользователю")
+    @Operation(summary = "Удаление бронирования по ID ", description = "доступно зарегистрированному пользователю и администратору")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Удаление бронирования по ID",
                     content = {
@@ -87,7 +92,9 @@ public interface BookingsApi {
     })
 
     @DeleteMapping(value = "/{id}")
-    BookingDto deleteBooking (@PathVariable("id") Long bookingId);
+    BookingDto deleteBooking (@PathVariable("id") Long bookingId,
+                              @Parameter(hidden = true)
+                              @AuthenticationPrincipal AuthenticatedUser currentUser);
 
 
     @Operation(summary = "Получение бронирований и по текущему пользователю", description = "Доступно только зарегистрированному пользователю")

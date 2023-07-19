@@ -35,8 +35,4 @@ public class Room {
     @ManyToMany(mappedBy = "rooms")
     private List<Booking> bookings;
 
-
-
-
-
 }

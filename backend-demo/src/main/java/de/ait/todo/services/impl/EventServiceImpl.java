@@ -3,6 +3,7 @@ package de.ait.todo.services.impl;
 import de.ait.todo.dto.EventDto;
 import de.ait.todo.dto.EventsPage;
 import de.ait.todo.dto.NewEventDto;
+import de.ait.todo.exceptions.IncorrectDeleteException;
 import de.ait.todo.exceptions.NotFoundException;
 import de.ait.todo.models.Event;
 import de.ait.todo.models.User;
@@ -24,13 +25,11 @@ public class EventServiceImpl implements EventService {
 
     private final UsersRepository usersRepository;
     @Override
-    public Long createEvent(@org.jetbrains.annotations.NotNull NewEventDto newEvent) {
+    public Long createEvent(NewEventDto newEvent, AuthenticatedUser currentUser) {
 
-        Long userId = newEvent.getUserId();
-
-    User user = usersRepository.findById(userId)
+    User user = usersRepository.findById(currentUser.getUser().getId())
             .orElseThrow(()->
-                    new NotFoundException("user with id <" + userId + "> not found"));
+                    new NotFoundException("user with id <" + currentUser.getUser().getId() + "> not found"));
 
         Event event = Event.builder()
                 .createDate(LocalDate.now())
@@ -74,10 +73,10 @@ public class EventServiceImpl implements EventService {
                         .orElseThrow(()->
                                 new NotFoundException("User with id <" + currentUser.getUser().getId() + "> not found")
                                 );
-        if(currentUser.getUser().getId().equals(user.getId()) || currentUser.getUser().getRole().equals(User.Role.ADMIN)) {
+        if(event.getUser().getId().equals(user.getId()) || currentUser.getUser().getRole().equals(User.Role.ADMIN)) {
 
             eventsRepository.deleteById(eventId);
-        }
+        } else throw new IncorrectDeleteException("Event is not Available");
         return EventDto.from(event);
     }
 

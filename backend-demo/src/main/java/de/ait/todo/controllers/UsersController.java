@@ -49,4 +49,10 @@ public class UsersController implements UsersApi {
         return ResponseEntity.ok(usersService.updateUserById(userId, newUserDto));
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @Override
+    public ResponseEntity<UserDto> getUserByRoomId(Integer roomId) {
+        return ResponseEntity.ok(usersService.getUserByRoomId(roomId));
+    }
+
 }

@@ -100,5 +100,19 @@ public interface UsersApi {
     @PutMapping(value = "/{id}")
     ResponseEntity<UserDto> updateUserById (@PathVariable("id") Long userId, @RequestBody NewUserDto newUserDto);
 
+
+    @Operation(summary = "Получение пользователя по ID номера", description = "Доступно только администратору")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Пользователь по ID номера",
+                    content = {
+                            @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = UserDto.class))
+                    }
+            )
+    })
+    @GetMapping(value = "/by-room/{id}")
+    ResponseEntity<UserDto> getUserByRoomId (@PathVariable("id") Integer roomId);
+
+
 }
 

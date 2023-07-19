@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface EventService {
 
-    Long createEvent (NewEventDto newEvent);
+    Long createEvent (NewEventDto newEvent, AuthenticatedUser currentUser);
 
     EventsPage getAll();
 

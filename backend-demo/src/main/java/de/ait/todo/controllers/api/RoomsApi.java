@@ -89,7 +89,7 @@ public interface RoomsApi {
     ResponseEntity<RoomDto> deleteRoom (@PathVariable("id") int id);
 
 
-    @Operation(summary = "Получение доступных номеров в заданный период", description = "Доступна только зарегистрированному пользователю")
+    @Operation(summary = "Получение доступных номеров в заданный период", description = "Доступно только зарегистрированному пользователю")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Получение доступных номеров",
                     content = {
@@ -108,4 +108,20 @@ public interface RoomsApi {
                                       @DateTimeFormat(pattern = "dd-MM-yyyy")
                                       @Pattern(regexp = "\\d{2}-\\d{2}-\\d{4}", message = "Date should be in format dd-MM-yyyy") LocalDate checkOutDate);
 
+
+    @Operation(summary = "Получение номеров по цене", description = "Доступно только зарегистрированному пользователю")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Получение номеров по цене",
+                    content = {
+                            @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = RoomDto.class))
+                    }
+            )
+    })
+    @GetMapping(value = "/by-price")
+    List<RoomDto> priceFilter (double startPrice, double endPrice);
+
+
+    @GetMapping(value = "/by-type")
+    List<RoomDto> typeOfRoomFilter (Room.TypeOfRoom typeOfRoom);
 }

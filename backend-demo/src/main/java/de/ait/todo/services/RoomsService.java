@@ -22,4 +22,8 @@ public interface RoomsService {
     RoomDto deleteRoom(int id);
 
     List<RoomDto> getAvailableRooms(LocalDate checkInDate, LocalDate checkOutDate);
+
+    List<RoomDto> priceFilter(double startPrice, double endPrice);
+
+    List<RoomDto> typeOfRoomFilter(Room.TypeOfRoom typeOfRoom);
 }

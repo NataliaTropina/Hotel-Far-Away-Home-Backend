@@ -21,9 +21,9 @@ public class EventsController implements EventsApi {
 
     @PreAuthorize("isAuthenticated()")
     @Override
-    public Long createEvent (NewEventDto newEvent) {
+    public Long createEvent (NewEventDto newEvent, AuthenticatedUser currentUser) {
 
-        return eventService.createEvent(newEvent);
+        return eventService.createEvent(newEvent, currentUser);
     }
 
     @Override
@@ -46,7 +46,6 @@ public class EventsController implements EventsApi {
     @PreAuthorize("isAuthenticated()")
     @Override
     public ResponseEntity<EventDto> updateEventById(AuthenticatedUser currentUser , Long eventId, NewEventDto newEvent) {
-       // Long currentUserId = currentUser.getUser().getId();
         return ResponseEntity.ok(eventService.updateEventById(currentUser,eventId, newEvent));
     }
 }

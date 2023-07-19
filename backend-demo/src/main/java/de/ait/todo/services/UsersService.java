@@ -17,4 +17,5 @@ public interface UsersService {
 
     UserDto updateUserById(Long userId, NewUserDto newUserDto);
 
+    UserDto getUserByRoomId(Integer roomId);
 }

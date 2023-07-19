@@ -33,7 +33,9 @@ public interface EventsApi {
      })
 
      @PostMapping(value = "")
-     Long createEvent (@RequestBody NewEventDto newEvent);
+     Long createEvent (@RequestBody NewEventDto newEvent,
+                       @Parameter(hidden = true)
+                       @AuthenticationPrincipal AuthenticatedUser currentUser);
 
 
     @Operation(summary = "Получение списка всех событий", description = "Доступно всем ")

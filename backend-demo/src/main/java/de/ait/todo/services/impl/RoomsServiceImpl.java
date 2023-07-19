@@ -105,6 +105,8 @@ public class RoomsServiceImpl implements RoomsService {
 
         for (Room room : allRooms) {
             boolean isAvailable = true;
+
+            //Получаются все бронирования, связанные с текущей комнатой
             List<Booking> allBookings = bookingsRepository.findAllByRoomsContains(room);
 
             // Проверка наличия брони для комнаты в заданный период
@@ -127,5 +129,29 @@ public class RoomsServiceImpl implements RoomsService {
             }
         }
         return RoomDto.from(availableRooms);
+    }
+
+    @Override
+    public List<RoomDto> priceFilter(double startPrice, double endPrice) {
+
+        List<Room> allRoms = roomsRepository.findAll();
+
+        List<Room> roomsByPrice = new ArrayList<>();
+
+        for (int i = 0; i < allRoms.size(); i++) {
+            if (allRoms.get(i).getPrice() >= startPrice && allRoms.get(i).getPrice() <= endPrice) {
+                roomsByPrice.add(allRoms.get(i));
+            } else throw new NotFoundException("There are no rooms for this price");
+        }
+
+        return RoomDto.from(roomsByPrice);
+    }
+
+    @Override
+    public List<RoomDto> typeOfRoomFilter(Room.TypeOfRoom typeOfRoom) {
+
+        List<Room> rooms = roomsRepository.findAllByTypeOfRoom(typeOfRoom);
+
+        return RoomDto.from(rooms);
     }
 }

@@ -54,4 +54,14 @@ public class RoomsController implements RoomsApi {
     public List<RoomDto> getAvailableRooms(LocalDate checkInDate, LocalDate checkOutDate) {
         return roomsService.getAvailableRooms(checkInDate, checkOutDate);
     }
+
+    @Override
+    public List<RoomDto> priceFilter(double startPrice, double endPrice) {
+        return roomsService.priceFilter(startPrice, endPrice);
+    }
+
+    @Override
+    public List<RoomDto> typeOfRoomFilter(Room.TypeOfRoom typeOfRoom) {
+        return roomsService.typeOfRoomFilter(typeOfRoom);
+    }
 }

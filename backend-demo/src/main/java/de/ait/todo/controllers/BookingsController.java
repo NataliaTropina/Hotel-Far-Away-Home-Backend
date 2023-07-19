@@ -21,9 +21,9 @@ public class BookingsController implements BookingsApi {
 
     @Override
     @PreAuthorize("isAuthenticated()")
-    public Long createBooking(NewBookingDto newBooking) {
+    public Long createBooking(NewBookingDto newBooking, AuthenticatedUser currentUser) {
 
-        return bookingsService.createBooking(newBooking);
+        return bookingsService.createBooking(newBooking, currentUser);
     }
 
     @Override
@@ -39,15 +39,15 @@ public class BookingsController implements BookingsApi {
     }
 
     @Override
-    @PreAuthorize("isAuthenticated()")
-    public BookingDto updateBooking(Long bookingId, NewBookingDto newBooking) {
-        return bookingsService.updateBooking(bookingId, newBooking);
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
+    public BookingDto updateBooking(Long bookingId, NewBookingDto newBooking, AuthenticatedUser currentUser) {
+        return bookingsService.updateBooking(bookingId, newBooking, currentUser);
     }
 
     @Override
-    @PreAuthorize("isAuthenticated()")
-    public BookingDto deleteBooking(Long bookingId) {
-        return bookingsService.deleteBooking(bookingId);
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
+    public BookingDto deleteBooking(Long bookingId, AuthenticatedUser currentUser) {
+        return bookingsService.deleteBooking(bookingId, currentUser);
     }
 
     @Override
