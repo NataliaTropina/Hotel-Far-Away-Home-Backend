@@ -8,12 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * 6/12/2023
- * spring-security-demo
- *
- * @author Marsel Sidikov (AIT TR)
- */
 @RequiredArgsConstructor
 @RestController
 public class SignUpController implements SignUpApi {

@@ -1,19 +1,24 @@
 package de.ait.todo.dto;
 
+import de.ait.todo.models.User;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * 6/12/2023
- * spring-security-demo
- *
- * @author Marsel Sidikov (AIT TR)
- */
+import java.time.LocalDateTime;
+
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class NewUserDto {
     private String email;
     private String password;
+    private LocalDateTime createDate;
+    private LocalDateTime updateDate;
+    private String firstName;
+    private String lastName;
+    private String phone;
 }

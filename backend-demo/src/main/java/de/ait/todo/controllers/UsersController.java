@@ -1,8 +1,7 @@
 package de.ait.todo.controllers;
 
 import de.ait.todo.controllers.api.UsersApi;
-import de.ait.todo.dto.ProfileDto;
-import de.ait.todo.dto.TasksPage;
+import de.ait.todo.dto.*;
 import de.ait.todo.security.details.AuthenticatedUser;
 import de.ait.todo.services.UsersService;
 import lombok.RequiredArgsConstructor;
@@ -10,12 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * 6/13/2023
- * spring-security-demo
- *
- * @author Marsel Sidikov (AIT TR)
- */
 @RestController
 @RequiredArgsConstructor
 public class UsersController implements UsersApi {
@@ -32,10 +25,34 @@ public class UsersController implements UsersApi {
         return ResponseEntity.ok(profile);
     }
 
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Override
-    public ResponseEntity<TasksPage> getMyTasks(AuthenticatedUser currentUser) {
-        Long currentUserId = currentUser.getUser().getId();
-        return ResponseEntity.ok(usersService.getTasksByUser(currentUserId));
+    public ResponseEntity<UsersPage> getAll() {
+        return ResponseEntity
+                .ok(usersService.getAll());
     }
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @Override
+    public ResponseEntity<UserDto> deleteUserById(Long userId) {
+       return ResponseEntity.ok(usersService.deleteUserById(userId));
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @Override
+    public ResponseEntity<UserDto> getUserById(Long userId) {
+        return ResponseEntity.ok(usersService.getUserById(userId));
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @Override
+    public ResponseEntity<UserDto> updateUserById(Long userId, NewUserDto newUserDto) {
+        return ResponseEntity.ok(usersService.updateUserById(userId, newUserDto));
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @Override
+    public ResponseEntity<UserDto> getUserByRoomId(Integer roomId) {
+        return ResponseEntity.ok(usersService.getUserByRoomId(roomId));
+    }
+
 }

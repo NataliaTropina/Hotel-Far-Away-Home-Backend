@@ -4,16 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * 6/11/2023
- * backend-demo
- *
- * @author Marsel Sidikov (AIT TR)
- */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,13 +25,25 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String email;
     private String hashPassword;
+
+
+    private LocalDateTime createdDate;
+
+    private LocalDateTime updatedDate;
+
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String phone;
 
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
     @OneToMany(mappedBy = "user")
-    private List<Task> tasks;
+    private List<Booking> bookings;
+
+    @OneToMany(mappedBy = "user")
+    private List<Event> events;
+
 }

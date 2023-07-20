@@ -11,12 +11,7 @@ import org.springframework.stereotype.Service;
 
 import static de.ait.todo.dto.UserDto.from;
 
-/**
- * 6/12/2023
- * spring-security-demo
- *
- * @author Marsel Sidikov (AIT TR)
- */
+
 @RequiredArgsConstructor
 @Service
 public class SignUpServiceImpl implements SignUpService {
@@ -27,7 +22,10 @@ public class SignUpServiceImpl implements SignUpService {
     @Override
     public UserDto signUp(NewUserDto newUser) {
         User user = User.builder()
+                .firstName(newUser.getFirstName())
+                .lastName(newUser.getLastName())
                 .email(newUser.getEmail())
+                .phone(newUser.getPhone())
                 .hashPassword(passwordEncoder.encode(newUser.getPassword()))
                 .role(User.Role.USER)
                 .build();
